@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - keycloak-postgres-network
+
+networks:
+  keycloak-postgres-network:
+    external: true
+
+volumes:
+  postgres_data:
