@@ -7,7 +7,7 @@ pipeline {
         stage("Clean up") {
             steps {
                 sh 'sudo rm -rf /home/omaima/.jenkins/workspace/mytest/r'
-                sh 'sudo rm -rf /root/.jenkins/workspace/astonvilla/*'
+                sh 'sudo rm -rf /home/omaima/.jenkins/workspace/mytest/astonvilla-app/*'
                 sh 'ls'
             }
         }
@@ -18,15 +18,15 @@ pipeline {
         }
         stage("Generate docker image") {
             steps {
-                dir("astonvilla-app") {
-                    sh "ls"
+                dir("r") { // Répertoire du dépôt cloné
+                    sh "ls" // Liste le contenu pour vérifier la présence du Dockerfile
                     sh "docker build -t oumaimakhelifi/astonvilla-app:1.1.${env.BUILD_NUMBER} ."
                 }
             }
         }
-        stage("push docker image") {
+        stage("Push docker image") {
             steps {
-                dir("astonvilla-app") {
+                dir("r") { // Répertoire du dépôt cloné
                     sh "docker push oumaimakhelifi/astonvilla-app:1.1.${env.BUILD_NUMBER}"
                 }
             }
@@ -35,9 +35,13 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'SonarQube Scanner' // Assurez-vous que le scanner SonarQube est configuré dans Jenkins
-                    withSonarQubeEnv('SonarQube Server') { // Nom du serveur SonarQube configuré dans Jenkins
-                        dir('astonvilla-app') {
-                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=astonvilla-app -Dsonar.sources=. -Dsonar.host.url=${env.SONARQUBE_URL}"
+                    withSonarQubeEnv('sonar') { // Nom du serveur SonarQube configuré dans Jenkins
+                        dir('r') { // Répertoire du dépôt cloné
+                            sh "${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.projectKey=astonvilla-app \
+                                -Dsonar.sources=. \
+                                -Dsonar.host.url=${env.SONARQUBE_URL} \
+                                -Dsonar.login=YOUR_SONARQUBE_TOKEN" // Remplacez par votre token SonarQube
                         }
                     }
                 }
@@ -45,4 +49,3 @@ pipeline {
         }
     }
 }
-
