@@ -1,9 +1,17 @@
 pipeline {
     agent any
     stages {
-        stage('Greeting') {  
+        stage('Clean workspace') {
             steps {
-                sh 'echo "Hello from Jenkins pipeline!"'
+                sh 'sudo rm -rf /root/.jenkins/workspace/astonvilla/*'
+                sh 'ls'
+            }
+        }
+        stage('Clone astonvilla application') {
+            steps {
+                sh 'git clone https://github.com/oumaimakhlifi/r.git'
+                sh 'ls'
+                sh 'pwd'
             }
         }
     }
