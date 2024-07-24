@@ -6,6 +6,7 @@ pipeline {
     stages {
         stage("Clean up") {
             steps {
+                sh 'sudo rm -rf /home/omaima/.jenkins/workspace/mytest/r'
                 sh 'sudo rm -rf /root/.jenkins/workspace/astonvilla/*'
                 sh 'ls'
             }
