@@ -34,14 +34,14 @@ pipeline {
         stage("SonarQube Analysis") {
             steps {
                 script {
-                    def scannerHome = tool 'SonarQube Scanner' // Assurez-vous que le scanner SonarQube est configuré dans Jenkins
-                    withSonarQubeEnv('sonar') { // Nom du serveur SonarQube configuré dans Jenkins
+                    def scannerHome = tool 'SonarQube Scanner' 
+                    withSonarQubeEnv('sonar') { 
                         dir('r') { // Répertoire du dépôt cloné
                             sh "${scannerHome}/bin/sonar-scanner \
                                 -Dsonar.projectKey=astonvilla-app \
                                 -Dsonar.sources=. \
                                 -Dsonar.host.url=${env.SONARQUBE_URL} \
-                                -Dsonar.login=squ_c51492f4594f426ab2552c7f8168472c26f3e7fb" // Remplacez par votre token SonarQube
+                                -Dsonar.login=squ_c51492f4594f426ab2552c7f8168472c26f3e7fb" 
                         }
                     }
                 }
