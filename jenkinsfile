@@ -41,7 +41,7 @@ pipeline {
                                 -Dsonar.projectKey=astonvilla-app \
                                 -Dsonar.sources=. \
                                 -Dsonar.host.url=${env.SONARQUBE_URL} \
-                                -Dsonar.login=YOUR_SONARQUBE_TOKEN" // Remplacez par votre token SonarQube
+                                -Dsonar.login=jenkins-sonar" // Remplacez par votre token SonarQube
                         }
                     }
                 }
