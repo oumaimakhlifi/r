@@ -18,6 +18,7 @@ pipeline {
         stage("Generate docker image") {
             steps {
                 dir("astonvilla-app") {
+                    sh "ls"
                     sh "docker build -t oumaimakhelifi/astonvilla-app:1.1.${env.BUILD_NUMBER} ."
                 }
             }
