@@ -1,17 +1,44 @@
 pipeline {
     agent any
+    environment {
+        SONARQUBE_URL = 'http://localhost:9000' // Remplacez par l'URL de votre instance SonarQube
+    }
     stages {
-        stage('Clean workspace') {
+        stage("Clean up") {
             steps {
-                sh 'sudo rm -rf /root/.jenkins/workspace/astonvilla/*'
+                sh 'rm -rf /root/.jenkins/workspace/astonvilla/*'
                 sh 'ls'
             }
         }
-        stage('Clone astonvilla application') {
+        stage("Clone repo") {
             steps {
-                sh 'git clone https://github.com/oumaimakhlifi/r.git'
-                sh 'ls'
-                sh 'pwd'
+                sh "git clone https://github.com/oumaimakhlifi/r.git"
+            }
+        }
+        stage("Generate docker image") {
+            steps {
+                dir("astonvilla-app") {
+                    sh "docker build -t oumaimakhelifi/astonvilla-app:1.1.${env.BUILD_NUMBER} ."
+                }
+            }
+        }
+        stage("push docker image") {
+            steps {
+                dir("astonvilla-app") {
+                    sh "docker push oumaimakhelifi/astonvilla-app:1.1.${env.BUILD_NUMBER}"
+                }
+            }
+        }
+        stage("SonarQube Analysis") {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarQube Scanner' // Assurez-vous que le scanner SonarQube est configuré dans Jenkins
+                    withSonarQubeEnv('SonarQube Server') { // Nom du serveur SonarQube configuré dans Jenkins
+                        dir('astonvilla-app') {
+                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=astonvilla-app -Dsonar.sources=. -Dsonar.host.url=${env.SONARQUBE_URL}"
+                        }
+                    }
+                }
             }
         }
     }
