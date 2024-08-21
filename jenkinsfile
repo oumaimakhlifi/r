@@ -1,7 +1,8 @@
 pipeline {
     agent any
     environment {
-        SONARQUBE_URL = 'http://localhost:9000' 
+        SONARQUBE_URL = 'http://localhost:9000'
+        GITHUB_TOKEN = credentials('github-token') // Retrieve the Git token from Jenkins credentials
     }
     stages {
         stage("Clean up") {
